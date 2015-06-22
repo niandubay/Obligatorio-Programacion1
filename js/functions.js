@@ -990,12 +990,12 @@ function cuantasPrimerasDeArray(_array, _cuantos) {
 }
 //------------------------------------------------------------------------------
 // Separar palabras de un string...
-function separar_palabras(_texto) {
-    var _palabras = new Array();
-    var _caracterseparador = " ";
-    _palabras = _texto.split(_caracterseparador);
-    return _palabras;
-}
+//function separar_palabras(_texto) {
+//    var _palabras = new Array();
+//    var _caracterseparador = " ";
+//    _palabras = _texto.split(_caracterseparador);
+//    return _palabras;
+//}
 //------------------------------------------------------------------------------
 // Clona _ventas pero le agrega la clave precio
 function agregarPrecioPublicacionEnArrayVentas(_ventas) {
@@ -1224,59 +1224,76 @@ function eliminar_pub(_codigo) {
 //////////////////////////////////Ordenar///////////////////////////////////////
 //------------------------------------------------------------------------------
 // Ordenar publicaciones alfabeticamente utilizando bubble sort
+//function ordenar_publicaciones(_listaPublicaciones) {
+//    // me clono la lista _listaPublicaciones...
+//    var _publicaciones = _listaPublicaciones.slice(0);
+//    var _largo = _publicaciones.length;
+//    do {
+//        var _cambios = false; //flag para cortar el loop
+//        for (var i = 1; i <= _largo - 1; i++) {
+//            //cargo los titulos completos
+//            var _titulo1 = _publicaciones[i - 1].titulo.toLowerCase();
+//            var _titulo2 = _publicaciones[i].titulo.toLowerCase();
+//            /*separo los titulos por palabras considerando que algunos 
+//             titulos pueden tener solo una palabra*/
+//            var _palabras_titulo1 = separar_palabras(_titulo1);
+//            var _palabras_titulo2 = separar_palabras(_titulo2);
+//            var _cantidadpalabras = 0;
+//            if (_palabras_titulo2.length > _palabras_titulo1.length) {
+//                _cantidadpalabras = _palabras_titulo1.length;
+//            } else {
+//                _cantidadpalabras = _palabras_titulo2.length;
+//            }
+//            for (var j = 0; j < _cantidadpalabras; j++) {
+//                if (_palabras_titulo1[j] !== _palabras_titulo2[j]) {
+//                    // ordenar y salir...
+//                    // obtengo el largo de la palabra mas corta
+//                    if (_palabras_titulo2[j].length > _palabras_titulo1[j].length) {
+//                        var _largoPalabra = _palabras_titulo1[j].length;
+//                    } else {
+//                        var _largoPalabra = _palabras_titulo2[j].length;
+//                    }
+//                    // comparo las letras de la palabra mas corta 
+//                    // y de ser necesario ordeno utilizando el bubble sort
+//                    for (var k = 0; k < _largoPalabra; k++) {
+//                        if (_palabras_titulo1[j].charAt(k) !== _palabras_titulo2[j].charAt(k)) {
+//                            if (_palabras_titulo1[j].charAt(k) > _palabras_titulo2[j].charAt(k)) {
+//                                var aux = _publicaciones[i - 1];
+//                                _publicaciones[i - 1] = _publicaciones[i];
+//                                _publicaciones[i] = aux;
+//                                _cambios = true;
+//                                j = _cantidadpalabras;
+//                                break;
+//                            } else {
+//                                j = _cantidadpalabras;
+//                                break;
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    break;
+//                }
+//            }
+//        }
+//        _largo = _largo - 1;
+//    } while (_cambios === true);
+//    return _publicaciones;
+//}
+//--------------versión corta que no usa separar_palabras()---------------------
 function ordenar_publicaciones(_listaPublicaciones) {
     // me clono la lista _listaPublicaciones...
     var _publicaciones = _listaPublicaciones.slice(0);
-    var _largo = _publicaciones.length;
-    do {
-        var _cambios = false; //flag para cortar el loop
-        for (var i = 1; i <= _largo - 1; i++) {
-            //cargo los titulos completos
-            var _titulo1 = _publicaciones[i - 1].titulo.toLowerCase();
-            var _titulo2 = _publicaciones[i].titulo.toLowerCase();
-            /*separo los titulos por palabras considerando que algunos 
-             titulos pueden tener solo una palabra*/
-            var _palabras_titulo1 = separar_palabras(_titulo1);
-            var _palabras_titulo2 = separar_palabras(_titulo2);
-            var _cantidadpalabras = 0;
-            if (_palabras_titulo2.length > _palabras_titulo1.length) {
-                _cantidadpalabras = _palabras_titulo1.length;
-            } else {
-                _cantidadpalabras = _palabras_titulo2.length;
-            }
-            for (var j = 0; j < _cantidadpalabras; j++) {
-                if (_palabras_titulo1[j] !== _palabras_titulo2[j]) {
-                    // ordenar y salir...
-                    // obtengo el largo de la palabra mas corta
-                    if (_palabras_titulo2[j].length > _palabras_titulo1[j].length) {
-                        var _largoPalabra = _palabras_titulo1[j].length;
-                    } else {
-                        var _largoPalabra = _palabras_titulo2[j].length;
-                    }
-                    // comparo las letras de la palabra mas corta 
-                    // y de ser necesario ordeno utilizando el bubble sort
-                    for (var k = 0; k < _largoPalabra; k++) {
-                        if (_palabras_titulo1[j].charAt(k) !== _palabras_titulo2[j].charAt(k)) {
-                            if (_palabras_titulo1[j].charAt(k) > _palabras_titulo2[j].charAt(k)) {
-                                var aux = _publicaciones[i - 1];
-                                _publicaciones[i - 1] = _publicaciones[i];
-                                _publicaciones[i] = aux;
-                                _cambios = true;
-                                j = _cantidadpalabras;
-                                break;
-                            } else {
-                                j = _cantidadpalabras;
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    break;
-                }
-            }
+    // la ordeno de forma alfabeticamente ascendente...
+    _publicaciones.sort(function (_a, _b) {
+        var _dev;
+        if (_a.titulo > _b.titulo) {
+            _dev = 1;
+        } else {
+            _dev = -1;
         }
-        _largo = _largo - 1;
-    } while (_cambios === true);
+        return _dev;
+    });
+    // retorno la _lista ordenada...
     return _publicaciones;
 }
 //------------------------------------------------------------------------------
