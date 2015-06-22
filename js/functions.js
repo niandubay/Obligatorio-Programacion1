@@ -1579,6 +1579,18 @@ $('#modificarPub').click(function () {
                 $("#publiEliminada").hide();
                 $("#publiNoEliminada").hide();
                 $("#mensajesBusqueda").hide();
+                // guardo el nuevo codigo en el campo oculto para evitar tener 
+                // que hacer otra vez la búsqueda...
+                $("#codigoBackup").val(_codigo);
+            } else {
+                // muestro mensajes de publicacion no modificada por campos malos
+                $("#mensajesModificacion").show();
+                $("#publiCamposMalos").show();
+                $("#publiNoModificada").show();
+                $("#publiModificada").hide();
+                $("#publiEliminada").hide();
+                $("#publiNoEliminada").hide();
+                $("#mensajesBusqueda").hide();
             }
         } else {
             // muestro mensajes de publicacion no modificada por campos malos
@@ -1595,7 +1607,6 @@ $('#modificarPub').click(function () {
     $(TablaPublicaciones);
     $(TablaCatalogo);
     $(TablaTop);
-    $("#codigoBackup").val(_codigo);
 });
 //------------------------------------------------------------------------------
 // Eliminar publicación
