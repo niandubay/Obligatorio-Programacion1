@@ -506,8 +506,8 @@ var ventas = new Array(
 //------------------------------------------------------------------------------
 /////////////////////////////////Constantes/////////////////////////////////////
 //------------------------------------------------------------------------------
-var stockMinimo = 4;
-var topCuanto = 10;
+var stockMinimo = 4; //--> cantidad alarmante de stock de una publicación
+var topCuanto = 10; //--> puede ser un topcinco.. un toptres...
 //------------------------------------------------------------------------------
 ///////////////////////////////////Login////////////////////////////////////////
 //------------------------------------------------------------------------------
@@ -615,24 +615,27 @@ function interfazSegunTipoUsuario(_tipo) {
 function validar_primer_letra_mayuscula(_string) {
     var _correcto = false;
     // la primer letra debe ser mayúscula..
-    if ((_string[0] >= 'A') && (_string[0] <= 'Z'))
-    {
+    if ((_string[0] >= 'A') && (_string[0] <= 'Z')) {
+        // si está entre A y Z es true...
         _correcto = true;
     } else {
+        // si no está es false...
         _correcto = false;
     }
     return _correcto;
 }
 //------------------------------------------------------------------------------
 function validar_descripcion(_desc) {
-// la descripción debe empezar con mayúscula y tener al menos 15 caracteres...
+    // la descripción debe empezar con mayúscula y tener al menos 15 caracteres...
     var _primer_letra_mayuscula = validar_primer_letra_mayuscula(_desc);
     var _correcto = false;
     var _largo = _desc.length;
-    if (_largo >= 15 && _primer_letra_mayuscula === true)
-    {
+    // mínimo 15 caracteres y la primera letra mayúscula...
+    if (_largo >= 15 && _primer_letra_mayuscula === true) {
+        // todo correcto, entonces true...
         _correcto = true;
     } else {
+        // algo no se cumple, entonces false...
         _correcto = false;
     }
     return _correcto;
@@ -640,10 +643,12 @@ function validar_descripcion(_desc) {
 //------------------------------------------------------------------------------
 function validar_email(_texto) {
     var _correcto = false;
-    if ((_texto.indexOf('@') !== -1) && (_texto.indexOf('@') === _texto.lastIndexOf('@')))
-    {
+    // como condición para que sea un email controlamos que tenga un sólo @...
+    if ((_texto.indexOf('@') !== -1) && (_texto.indexOf('@') === _texto.lastIndexOf('@'))) {
+        // si tiene 1 y sólo 1..
         _correcto = true;
     } else {
+        // si no tiene, o tiene más de 1...
         _correcto = false;
     }
     return _correcto;
@@ -719,6 +724,7 @@ function validarCodigoIdentificador(_codigoId, _tipoPub) {
 function validarCampoVacio(_campo) {
     var _vacio = false;
     if (_campo !== "") {
+        // si tiene algo, cualquier cosa, ya es true...
         _vacio = true;
     }
     return _vacio;
@@ -726,6 +732,7 @@ function validarCampoVacio(_campo) {
 //------------------------------------------------------------------------------
 function validarPrecio(_precio) {
     var _precioValido = false;
+    // el precio tiene que ser mayor que 0...
     if (_precio > 0) {
         _precioValido = true;
     }
@@ -734,6 +741,7 @@ function validarPrecio(_precio) {
 //------------------------------------------------------------------------------
 function validarStock(_stock) {
     var _stockValido = false;
+    // el stock puede ser 0, pero no negativo...
     if (_stock >= 0) {
         _stockValido = true;
     }
@@ -780,41 +788,49 @@ function validar_publicacion(_tipo, _codigo, _imagen, _titulo, _desc, _autor, _p
 //------------------------------------------------------------------------------
 function buscar_publicacion_codigo(_listaPublicaciones, _codigo) {
     var _publicacion = -1;
+    // recorro la lista de publicaciones...
     for (var i = 0; i < _listaPublicaciones.length; i++) {
+        // si encuentro algúna que tenga ese _codigo...
         if (parseInt(_listaPublicaciones[i].codigo) === parseInt(_codigo)) {
+            // la guardo en la variable...
             _publicacion = _listaPublicaciones[i];
             break;
         }
     }
+    // devuelve la publicación o -1 en caso de no encontrarla...
     return _publicacion;
 }
 //------------------------------------------------------------------------------
 function posicion_publicacion(_listaPublicaciones, _codigo) {
     var _posicion = false;
-    // recorro la lista de publicaciones
+    // recorro la lista de publicaciones...
     for (var i = 0; i < _listaPublicaciones.length; i++) {
-        // si encuentro el elemento en la lista guardo su posición
+        // si encuentro el elemento en la lista guardo su posición...
         if (_listaPublicaciones[i].codigo === _codigo) {
             _posicion = i;
             break;
         }
     }
+    // devuelve la posición (i) o false en caso de no encontrarla...
     return _posicion;
 }
 //------------------------------------------------------------------------------
 function buscarVentasPorCodigo(_codigo) {
+    // creo un array donde ir guardando las ventas que encuentre con ese código
     var _ventas = new Array();
     // recorro la lista de ventas
     for (var i = 0; i < ventas.length; i++) {
-        // cuando encuentro la venta con el codigo de producto deseado la guardo
+        // cuando encuentro la venta con el codigo de producto deseado la pusheo
         if (ventas[i].codigo_pub === _codigo) {
             _ventas.push(ventas[i]);
         }
     }
+    // si no hubo resultados...
     if (_ventas.length === 0) {
-        // devuelve false si no hay ventas con ese código...
+        // devuelve false...
         _ventas = false;
     }
+    // devuelve un array con las ventas con ese código o false si no hay ninguna
     return _ventas;
 }
 //------------------------------------------------------------------------------
@@ -823,7 +839,7 @@ function buscarVentasPorCodigo(_codigo) {
 // Dibujar tabla
 function dibujarTabla(_array, _tabla) {
     // thead - cargo los headers tomando el primer elemento del array indexado y 
-    // sacando las categorias del array asociativo en esa posicion...
+    // sacando las claves del array asociativo en esa posicion...
     var _cabecera = "<tr>";
     for (var j in _array[0]) {
         _cabecera += "<th>" + j + "</th>";
@@ -845,6 +861,7 @@ function dibujarTabla(_array, _tabla) {
             }
         }
         _linea += "</tr>";
+        // dibujo la línea...
         $("#" + _tabla + ">tbody").append(_linea);
     }
 }
@@ -852,7 +869,7 @@ function dibujarTabla(_array, _tabla) {
 // Dibujar tabla tops   ->> mezclando datos
 function dibujarTablaTops(_arrayDeTops, _tabla) {
     // clono el array para trabajar sobre copia...
-    var _array = JSON.parse(JSON.stringify(_arrayDeTops));
+    var _array = _arrayDeTops.slice(0);
     // elimino en los objetos del array las claves no usadas..
     for (var n = 0; n < _arrayDeTops.length; n++) {
         delete _arrayDeTops[n].fecha;
@@ -915,14 +932,13 @@ function dibujarTablaCatalogo(_array, _tabla) {
 function listar_publicaciones_menor_precio(_listaPublicaciones, _precio) {
     var _listadoPrecio = new Array();
     // recorro la lista de publicaciones
-    for (var i = 0; i < _listaPublicaciones.length; i++)
-    {
+    for (var i = 0; i < _listaPublicaciones.length; i++) {
         // guardo las publicaciones que tengan el precio dado
-        if (_listaPublicaciones[i].precio < _precio)
-        {
+        if (_listaPublicaciones[i].precio < _precio) {
             _listadoPrecio.push(_listaPublicaciones[i]);
         }
     }
+    // devuelve el array con las publicaciones encontradas...
     return _listadoPrecio;
 }
 //------------------------------------------------------------------------------
@@ -930,11 +946,9 @@ function listar_publicaciones_menor_precio(_listaPublicaciones, _precio) {
 function total_ventas_fecha(_ventas, _fecha) {
     var _totalVentas = 0;
     // recorro la lista de ventas 
-    for (var i = 0; i < _ventas.length; i++)
-    {
-        // sumo al contador cuando la venta concuerda con la fecha dada.
-        if (_ventas[i].fecha === _fecha)
-        {
+    for (var i = 0; i < _ventas.length; i++) {
+        // sumo al contador cuando la venta concuerda con la fecha dada...
+        if (_ventas[i].fecha === _fecha) {
             _totalVentas += _ventas[i].total;
         }
     }
@@ -943,7 +957,7 @@ function total_ventas_fecha(_ventas, _fecha) {
 //------------------------------------------------------------------------------
 // Sumar ventas de misma publicación
 function sumarVentas(_ventas) {
-    // clono el array
+    // clono el array de esta forma por con slice da error raro...
     var _array = JSON.parse(JSON.stringify(_ventas));
     // recorro el listado de ventas hasta el penultimo 
     for (var i = 0; i < _ventas.length - 1; i++) {
@@ -966,20 +980,22 @@ function sumarVentas(_ventas) {
         delete _array[n].fecha;
         delete _array[n].numero;
     }
+    // devuelve un array con las ventas unificadas por codigo de publicación...
     return _array;
 }
 //------------------------------------------------------------------------------
 // Seleccionar solo las publicaciones que estén habilitadas
 function publicacionesHabilitadas(_array) {
-    //creo un nuevo array
+    // creo un nuevo array...
     var _publicacionesHabilitadas = new Array();
-    //recorro el listado pasado como parametro
+    // recorro el listado pasado como parámetro...
     for (var i = 0; i < _array.length; i++) {
-        //guardo las publicaciones con estado habilitado
+        // guardo las publicaciones con estado habilitado...
         if (_array[i].estado === 'habilitado') {
             _publicacionesHabilitadas.push(_array[i]);
         }
     }
+    // retonro un array con solo las publicaciones habilitadas...
     return _publicacionesHabilitadas;
 }
 // -----------------------------------------------------------------------------
@@ -1233,7 +1249,7 @@ function ordenar_publicaciones(_listaPublicaciones) {
 //------------------------------------------------------------------------------
 // Ordenar _array por _clave
 function ordenarArrayPorClave(_array, _clave) {
-// clono el array _ventas y lo voy a ordenar de forma descendente...
+    // clono el array _ventas y lo voy a ordenar de forma descendente...
     var _lista = _array.slice(0);
     _lista.sort(function (a, b) {
         // dados a y b (se asume b>a) y retorno primero b y luego a
