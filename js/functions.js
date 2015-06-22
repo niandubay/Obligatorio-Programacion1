@@ -1105,61 +1105,72 @@ function ingresar_ventas(_ventas, _codigoPublicacion, _cantidad) {
     var _fecha = generar_fecha();
     // me guardo la publicación con ese código...
     var _publicacion = buscar_publicacion_codigo(listaPublicaciones, _codigoPublicacion);
-    // si la publicación existe...
-    if (_publicacion !== -1) {
-        // me guardo el stock..
-        var _stock = _publicacion.stock;
-        // calculo el total de la venta...
-        var _total = _publicacion.precio * _cantidad;
-        // si hay suficiente stock para efectuar la venta...
-        if (_stock >= _cantidad && _cantidad !== 0) {
-            // genero el número de venta...
-            var _numeroVenta = _ventas.length + 1; //empiezan en 1 las ventas
-            // creo el objeto venta...
-            var _nuevaVenta = {
-                numero: _numeroVenta,
-                fecha: _fecha,
-                codigo_pub: _codigoPublicacion,
-                cantidad: _cantidad,
-                total: _total
-            };
-            // actualizo el stock de la publicación con ese código...
-            actualizar_stock(listaPublicaciones, _codigoPublicacion, _cantidad);
-            // una vez actualizado el stock, agrego la _nuevaVenta a _ventas
-            _ventas.push(_nuevaVenta);
-            // mando el mensaje exitoso de venta agregada...
-            $("#mensajesVenta").show();
-            $("#ventaIngresada").show();
-            $("#ventaNoIngresada").hide();
-            $("#stockBajo").hide();
-            $("#ventaSinStock").hide();
-            $("#pubNoEncontrada").hide();
-            // si el stock de esa publicación ha quedado por debajo del stock mínimo...
-            if (_publicacion.stock < stockMinimo) {
-                // mensaje avisando stock menor a stock mínimo...
+    // si la cantidad es mayor a 0, para no hacer ventas nulas o negativas...
+    if (_cantidad > 0) {
+        // si la publicación existe...
+        if (_publicacion !== -1) {
+            // me guardo el stock..
+            var _stock = _publicacion.stock;
+            // calculo el total de la venta...
+            var _total = _publicacion.precio * _cantidad;
+            // si hay suficiente stock para efectuar la venta...
+            if (_stock >= _cantidad && _cantidad > 0) {
+                // genero el número de venta...
+                var _numeroVenta = _ventas.length + 1; //empiezan en 1 las ventas
+                // creo el objeto venta...
+                var _nuevaVenta = {
+                    numero: _numeroVenta,
+                    fecha: _fecha,
+                    codigo_pub: _codigoPublicacion,
+                    cantidad: _cantidad,
+                    total: _total
+                };
+                // actualizo el stock de la publicación con ese código...
+                actualizar_stock(listaPublicaciones, _codigoPublicacion, _cantidad);
+                // una vez actualizado el stock, agrego la _nuevaVenta a _ventas
+                _ventas.push(_nuevaVenta);
+                // mando el mensaje exitoso de venta agregada...
                 $("#mensajesVenta").show();
                 $("#ventaIngresada").show();
-                $("#stockBajo").show();
+                $("#ventaNoIngresada").hide();
+                $("#stockBajo").hide();
                 $("#ventaSinStock").hide();
                 $("#pubNoEncontrada").hide();
-                $("#ventaNoIngresada").hide();
+                // si el stock de esa publicación ha quedado por debajo del stock mínimo...
+                if (_publicacion.stock < stockMinimo) {
+                    // mensaje avisando stock menor a stock mínimo...
+                    $("#mensajesVenta").show();
+                    $("#ventaIngresada").show();
+                    $("#stockBajo").show();
+                    $("#ventaSinStock").hide();
+                    $("#pubNoEncontrada").hide();
+                    $("#ventaNoIngresada").hide();
+                }
+            } else {
+                // si no hay suficiente stock...
+                $("#ventaIngresada").hide();
+                $("#pubNoEncontrada").hide();
+                $("#stockBajo").hide();
+                $("#mensajesVenta").show();
+                $("#ventaSinStock").show();
+                $("#ventaNoIngresada").show();
             }
         } else {
-            // si no hay suficiente stock...
+            // si no se encuentra la publicación para la que se quiere crear la venta...
             $("#ventaIngresada").hide();
-            $("#pubNoEncontrada").hide();
+            $("#ventaSinStock").hide();
             $("#stockBajo").hide();
             $("#mensajesVenta").show();
-            $("#ventaSinStock").show();
+            $("#pubNoEncontrada").show();
             $("#ventaNoIngresada").show();
         }
     } else {
-        // si no se encuentra la publicación para la que se quiere crear la venta...
+        // si es una venta nula o negativa...
         $("#ventaIngresada").hide();
-        $("#ventaSinStock").hide();
+        $("#pubNoEncontrada").hide();
         $("#stockBajo").hide();
         $("#mensajesVenta").show();
-        $("#pubNoEncontrada").show();
+        $("#ventaSinStock").hide();
         $("#ventaNoIngresada").show();
     }
 }
@@ -1658,6 +1669,9 @@ $("#generarReportePorPrecio").click(function () {
         $("#reportePrecioGenerado").hide();
         $("#reportePrecioNoGenerado").show();
         $("#mensajesBusquedaPorFecha").hide();
+        // vacío la tabla
+        $("#tablaReportePorPrecio>thead").html("");
+        $("#tablaReportePorPrecio>tbody").html("");
     }
 });
 //------------------------------------------------------------------------------
@@ -1688,6 +1702,9 @@ $("#generarReportePorFecha").click(function () {
         $("#reporteFechaNoGenerado").show();
         $("#reporteFechaGenerado").hide();
         $("#mensajesBusquedaPorPrecio").hide();
+        // vacío la tabla
+        $("#tablaReportePorFecha>thead").html("");
+        $("#tablaReportePorFecha>tbody").html("");
     }
 });
 //------------------------------------------------------------------------------
