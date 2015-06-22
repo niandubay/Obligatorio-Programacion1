@@ -225,6 +225,11 @@ th, td{
     width:95%;
 }
 
+#login input[type="password"]
+{
+    width:95%;
+}
+
 /*menu*/
 .menu {
     padding:10px 0 0 0;
