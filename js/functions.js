@@ -641,19 +641,6 @@ function validar_descripcion(_desc) {
     return _correcto;
 }
 //------------------------------------------------------------------------------
-function validar_email(_texto) {
-    var _correcto = false;
-    // como condición para que sea un email controlamos que tenga un sólo @...
-    if ((_texto.indexOf('@') !== -1) && (_texto.indexOf('@') === _texto.lastIndexOf('@'))) {
-        // si tiene 1 y sólo 1..
-        _correcto = true;
-    } else {
-        // si no tiene, o tiene más de 1...
-        _correcto = false;
-    }
-    return _correcto;
-}
-//------------------------------------------------------------------------------
 function validarCodigoIdentificador(_codigoId, _tipoPub) {
     var _valido = true;
     // según el tipo de publicación controlo una cosa u otra...
@@ -1115,36 +1102,39 @@ function ingresar_ventas(_ventas, _codigoPublicacion, _cantidad) {
             var _total = _publicacion.precio * _cantidad;
             // si hay suficiente stock para efectuar la venta...
             if (_stock >= _cantidad && _cantidad > 0) {
-                // genero el número de venta...
-                var _numeroVenta = _ventas.length + 1; //empiezan en 1 las ventas
-                // creo el objeto venta...
-                var _nuevaVenta = {
-                    numero: _numeroVenta,
-                    fecha: _fecha,
-                    codigo_pub: _codigoPublicacion,
-                    cantidad: _cantidad,
-                    total: _total
-                };
-                // actualizo el stock de la publicación con ese código...
-                actualizar_stock(listaPublicaciones, _codigoPublicacion, _cantidad);
-                // una vez actualizado el stock, agrego la _nuevaVenta a _ventas
-                _ventas.push(_nuevaVenta);
-                // mando el mensaje exitoso de venta agregada...
-                $("#mensajesVenta").show();
-                $("#ventaIngresada").show();
-                $("#ventaNoIngresada").hide();
-                $("#stockBajo").hide();
-                $("#ventaSinStock").hide();
-                $("#pubNoEncontrada").hide();
-                // si el stock de esa publicación ha quedado por debajo del stock mínimo...
-                if (_publicacion.stock < stockMinimo) {
-                    // mensaje avisando stock menor a stock mínimo...
+                var _confirmUsuario = confirm('El total de la venta es: ' + _total + '\n¿Continuar?');
+                if (_confirmUsuario === true) {
+                    // genero el número de venta...
+                    var _numeroVenta = _ventas.length + 1; //empiezan en 1 las ventas
+                    // creo el objeto venta...
+                    var _nuevaVenta = {
+                        numero: _numeroVenta,
+                        fecha: _fecha,
+                        codigo_pub: _codigoPublicacion,
+                        cantidad: _cantidad,
+                        total: _total
+                    };
+                    // actualizo el stock de la publicación con ese código...
+                    actualizar_stock(listaPublicaciones, _codigoPublicacion, _cantidad);
+                    // una vez actualizado el stock, agrego la _nuevaVenta a _ventas
+                    _ventas.push(_nuevaVenta);
+                    // mando el mensaje exitoso de venta agregada...
                     $("#mensajesVenta").show();
                     $("#ventaIngresada").show();
-                    $("#stockBajo").show();
+                    $("#ventaNoIngresada").hide();
+                    $("#stockBajo").hide();
                     $("#ventaSinStock").hide();
                     $("#pubNoEncontrada").hide();
-                    $("#ventaNoIngresada").hide();
+                    // si el stock de esa publicación ha quedado por debajo del stock mínimo...
+                    if (_publicacion.stock < stockMinimo) {
+                        // mensaje avisando stock menor a stock mínimo...
+                        $("#mensajesVenta").show();
+                        $("#ventaIngresada").show();
+                        $("#stockBajo").show();
+                        $("#ventaSinStock").hide();
+                        $("#pubNoEncontrada").hide();
+                        $("#ventaNoIngresada").hide();
+                    }
                 }
             } else {
                 // si no hay suficiente stock...
